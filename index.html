@@ -464,7 +464,15 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
 .wish.show { opacity: 1; }
 .wish-card { position: relative; max-width: 380px; width: 100%; padding: 30px 26px 24px; border-radius: 22px; text-align: center; color: #F4ECE5; background: radial-gradient(120% 90% at 50% 0%, #8E1B22 0%, #4A0F14 60%, #2A090C 100%); border: 2px solid #E8C36A; box-shadow: 0 24px 60px rgba(0,0,0,.6), inset 0 0 40px rgba(232,195,106,.15); transform: scale(.85) translateY(10px); transition: transform .35s cubic-bezier(.2,1.4,.4,1); }
 .wish.show .wish-card { transform: none; }
-.wish-card img { width: 86px; height: auto; margin: -70px auto 8px; display: block; filter: drop-shadow(0 8px 14px rgba(0,0,0,.5)); }
+.gift-stage { position: absolute; left: 0; top: 0; transform-origin: 50% 80%; }
+.gift-stage img { position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; filter: drop-shadow(0 10px 18px rgba(0,0,0,.5)); }
+.gift-stage .g-body { position: relative; clip-path: polygon(0 66%, 100% 59%, 100% 100%, 0 100%); }
+.gift-stage .g-lid { clip-path: polygon(0 0, 100% 0, 100% 60%, 0 67%); transform-origin: 30% 60%; }
+.g-rays { position: absolute; left: 50%; top: 55%; width: 340px; height: 340px; margin: -170px 0 0 -170px; border-radius: 50%; opacity: 0; pointer-events: none; background: radial-gradient(circle, rgba(255,236,170,.95) 0 10%, rgba(255,200,90,.35) 32%, rgba(255,200,90,0) 62%), repeating-conic-gradient(from 0deg, rgba(255,220,140,.45) 0 8deg, rgba(255,220,140,0) 8deg 24deg); -webkit-mask: radial-gradient(circle, #000 35%, transparent 70%); mask: radial-gradient(circle, #000 35%, transparent 70%); }
+.confetti { position: absolute; left: 0; top: 0; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; }
+.confetti.star { width: auto; height: auto; background: none; font-size: 18px; line-height: 1; font-style: normal; text-shadow: 0 0 8px rgba(255,220,120,.9); }
+.wish-card { visibility: hidden; }
+.wish-card .wish-star { margin: 0 0 8px; color: #E8C36A; letter-spacing: .4em; font-size: .9rem; }
 .wish-card .wish-kicker { font: 800 .72rem/1 var(--f-body); letter-spacing: .16em; text-transform: uppercase; color: #E8C36A; margin: 0 0 12px; }
 .wish-card .wish-text { font-family: var(--f-hand); font-size: 1.65rem; line-height: 1.25; margin: 0 0 14px; }
 .wish-card .wish-sign { font-size: .85rem; opacity: .8; margin: 0; }
@@ -1212,7 +1220,7 @@ window.VBXmas = (function () {
   var WISH = {"de": ["Frohe Weihnachten und ein Jahr voller Lieblingsgerichte!", "Möge dein Fest so warm sein wie eine Schale Pho.", "Ho ho ho! Frohe Weihnachten aus der VietBowl-Küche.", "Viel Liebe, viel Lachen und viel gutes Essen zum Fest!", "Wir wünschen dir besinnliche Feiertage mit deinen Liebsten.", "Frohe Weihnachten! Möge 2027 frisch sein wie unsere Kräuter.", "Ein Fest voller Wärme, Licht und leckerer Momente!", "Schöne Bescherung! Danke, dass du bei uns zu Gast bist.", "Frohes Fest und einen guten Rutsch ins neue Jahr!", "Für dich: eine Extraportion Glück zu Weihnachten.", "Möge der Weihnachtsmann dir nur das Beste bringen!", "Fröhliche Weihnachten! Wir freuen uns, dich bald zu sehen.", "Zeit für Familie, Freunde und gutes Essen. Frohe Weihnachten!", "Gesundheit, Glück und volle Schalen im neuen Jahr!", "Frohe Weihnachten! Chúc mừng Giáng sinh!"], "en": ["Merry Christmas and a year full of favourite dishes!", "May your holidays be as warm as a bowl of pho.", "Ho ho ho! Merry Christmas from the VietBowl kitchen.", "Lots of love, laughter and good food this Christmas!", "Wishing you peaceful holidays with the people you love.", "Merry Christmas! May 2027 be as fresh as our herbs.", "A season full of warmth, light and delicious moments!", "Thank you for being our guest. Happy holidays!", "Merry Christmas and a Happy New Year!", "For you: an extra helping of luck this Christmas.", "May Santa bring you nothing but the best!", "Merry Christmas! We look forward to seeing you soon.", "Time for family, friends and good food. Merry Christmas!", "Health, happiness and full bowls in the new year!", "Merry Christmas! Chúc mừng Giáng sinh!"], "vi": ["Chúc bạn Giáng sinh an lành và một năm mới toàn món ngon!", "Chúc mùa lễ của bạn ấm áp như một bát phở nóng.", "Ho ho ho! Giáng sinh vui vẻ từ căn bếp VietBowl.", "Thật nhiều yêu thương, tiếng cười và món ngon dịp Giáng sinh!", "Chúc bạn kỳ nghỉ lễ bình yên bên những người thân yêu.", "Giáng sinh vui vẻ! Chúc năm 2027 tươi mới như rau thơm của chúng tôi.", "Một mùa lễ tràn đầy ấm áp, ánh sáng và khoảnh khắc ngon lành!", "Cảm ơn bạn đã ghé VietBowl. Chúc mừng Giáng sinh!", "Giáng sinh an lành và năm mới hạnh phúc!", "Tặng bạn thêm một phần may mắn mùa Giáng sinh.", "Chúc ông già Noel mang đến cho bạn những điều tốt đẹp nhất!", "Giáng sinh vui vẻ! Mong sớm được gặp bạn.", "Thời gian cho gia đình, bạn bè và món ngon. Giáng sinh vui vẻ!", "Sức khỏe, hạnh phúc và bát luôn đầy trong năm mới!", "Merry Christmas! Frohe Weihnachten! Giáng sinh vui vẻ!"]};
   var UI = { de: ['Ein Gruß für dich', 'Dein VietBowl-Team', 'Geschenk öffnen', 'Schließen'], en: ['A wish for you', 'Your VietBowl team', 'Open the gift', 'Close'], vi: ['Lời chúc dành cho bạn', 'VietBowl Potsdamer Platz', 'Mở quà', 'Đóng'] };
   var bags = {};
-  function lang() { var l = window.VB_LANG || 'de'; return WISH[l] ? l : 'de'; }
+  function lang() { return 'de'; }
   function nextWish() {
     var l = lang(), b = bags[l];
     if (!b || !b.length) { b = bags[l] = WISH[l].map(function (_, i) { return i; }); for (var i = b.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = b[i]; b[i] = b[j]; b[j] = t; } }
@@ -1269,23 +1277,79 @@ window.VBXmas = (function () {
       b.classList.remove('landed');
       var r = b.getBoundingClientRect();
       b.style.transform = 'translate(' + r.left + 'px,' + r.top + 'px)'; fall.cancel();
-      b.animate([{ transform: b.style.transform + ' scale(1)' }, { transform: b.style.transform + ' scale(1.5)', opacity: 0 }], { duration: 350, fill: 'forwards' }).onfinish = function () { remove(false); };
-      show();
+      remove(false);
+      show(r);
     });
   }
-  function show() {
-    var l = lang(), ui = UI[l];
+  function show(from) {
+    var ui = UI.de;
     var w = document.createElement('div'); w.className = 'wish'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true'); w.setAttribute('data-i18n-dyn', '');
-    w.innerHTML = '<div class="wish-card"><button type="button" class="wish-close" aria-label="' + ui[3] + '">✕</button><img alt="" src="' + GIFT + '"><p class="wish-kicker"></p><p class="wish-text"></p><p class="wish-sign"></p></div>';
+    w.innerHTML = '<div class="gift-stage"><span class="g-rays"></span><img class="g-body" alt="" src="' + GIFT + '"><img class="g-lid" alt="" src="' + GIFT + '"></div>' +
+      '<div class="wish-card"><button type="button" class="wish-close" aria-label="' + ui[3] + '">✕</button><p class="wish-star">✦ ✦ ✦</p><p class="wish-kicker"></p><p class="wish-text"></p><p class="wish-sign"></p></div>';
     w.querySelector('.wish-kicker').textContent = ui[0];
     w.querySelector('.wish-text').textContent = nextWish();
     w.querySelector('.wish-sign').textContent = '♥ ' + ui[1];
     document.body.appendChild(w);
     requestAnimationFrame(function () { w.classList.add('show'); });
-    var btn = w.querySelector('.wish-close'); btn.focus({ preventScroll: true });
+    var stage = w.querySelector('.gift-stage'), lid = w.querySelector('.g-lid'), body = w.querySelector('.g-body'), rays = w.querySelector('.g-rays'), card = w.querySelector('.wish-card');
+    var vw = innerWidth, vh = innerHeight, S = Math.min(170, vw * 0.42);
+    var cx = vw / 2 - S / 2, cy = vh / 2 - S / 2 + 30;
+    var fx = from ? from.left : cx, fy = from ? from.top : cy, fs = from ? from.width / S : 0.4;
+    var ready = false;
+    stage.style.width = S + 'px';
+    stage.animate([
+      { transform: 'translate(' + fx + 'px,' + fy + 'px) scale(' + fs + ')' },
+      { transform: 'translate(' + cx + 'px,' + (cy - 40) + 'px) scale(1.08)', offset: 0.7 },
+      { transform: 'translate(' + cx + 'px,' + cy + 'px) scale(1)' }
+    ], { duration: 650, easing: 'cubic-bezier(.3,.7,.4,1)', fill: 'forwards' }).finished.then(function () {
+      return stage.animate([
+        { transform: 'translate(' + cx + 'px,' + cy + 'px) rotate(0)' },
+        { transform: 'translate(' + (cx - 6) + 'px,' + cy + 'px) rotate(-7deg)' },
+        { transform: 'translate(' + (cx + 6) + 'px,' + cy + 'px) rotate(7deg)' },
+        { transform: 'translate(' + (cx - 5) + 'px,' + cy + 'px) rotate(-6deg)' },
+        { transform: 'translate(' + (cx + 4) + 'px,' + cy + 'px) rotate(5deg)' },
+        { transform: 'translate(' + cx + 'px,' + (cy + 6) + 'px) scale(1.06,.92)' },
+        { transform: 'translate(' + cx + 'px,' + cy + 'px) rotate(0)' }
+      ], { duration: 750, easing: 'ease-in-out', fill: 'forwards' }).finished;
+    }).then(function () {
+      lid.animate([
+        { transform: 'translate(0,0) rotate(0)' },
+        { transform: 'translate(' + (-S * 0.35) + 'px,' + (-S * 1.1) + 'px) rotate(-40deg)', offset: 0.55 },
+        { transform: 'translate(' + (-S * 0.7) + 'px,' + (-S * 0.6) + 'px) rotate(-110deg)', opacity: 0 }
+      ], { duration: 1100, easing: 'cubic-bezier(.2,.8,.4,1)', fill: 'forwards' });
+      rays.animate([{ opacity: 0, transform: 'scale(.3) rotate(0)' }, { opacity: 1, transform: 'scale(1.3) rotate(40deg)', offset: 0.35 }, { opacity: 0, transform: 'scale(1.8) rotate(90deg)' }], { duration: 1500, easing: 'ease-out', fill: 'forwards' });
+      burst(cx + S / 2, cy + S * 0.55);
+      body.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.05,.9)', opacity: 1, offset: 0.2 }, { transform: 'scale(.9)', opacity: 0 }], { duration: 900, delay: 350, fill: 'forwards' });
+      setTimeout(function () {
+        card.style.visibility = 'visible';
+        card.animate([
+          { transform: 'translateY(' + (cy + S / 2 - vh / 2) + 'px) scale(.15)', opacity: 0 },
+          { transform: 'translateY(-14px) scale(1.04)', opacity: 1, offset: 0.7 },
+          { transform: 'none', opacity: 1 }
+        ], { duration: 650, easing: 'cubic-bezier(.2,1.3,.4,1)', fill: 'forwards' });
+        ready = true; btn.focus({ preventScroll: true });
+      }, 700);
+    });
+    function burst(x, y) {
+      var colors = ['#E8C36A', '#F68712', '#D7263D', '#FFFFFF', '#FFD86B', '#2E8B57'];
+      for (var i = 0; i < 46; i++) {
+        var p = document.createElement('i'); p.className = 'confetti';
+        var c = colors[i % colors.length], star = i % 5 === 0;
+        if (star) { p.textContent = '✦'; p.style.color = c; p.classList.add('star'); } else { p.style.background = c; if (i % 3 === 0) p.style.borderRadius = '50%'; }
+        w.appendChild(p);
+        var a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.3, v = 140 + Math.random() * 230;
+        var dx = Math.cos(a) * v, dy = Math.sin(a) * v, rot = (Math.random() - 0.5) * 900;
+        p.animate([
+          { transform: 'translate(' + x + 'px,' + y + 'px) rotate(0) scale(.4)', opacity: 1 },
+          { transform: 'translate(' + (x + dx) + 'px,' + (y + dy) + 'px) rotate(' + rot / 2 + 'deg) scale(1)', opacity: 1, offset: 0.45 },
+          { transform: 'translate(' + (x + dx * 1.25) + 'px,' + (y + dy + 260 + Math.random() * 120) + 'px) rotate(' + rot + 'deg) scale(.9)', opacity: 0 }
+        ], { duration: 1600 + Math.random() * 900, easing: 'cubic-bezier(.15,.7,.4,1)', fill: 'forwards' }).onfinish = (function (el) { return function () { el.remove(); }; })(p);
+      }
+    }
+    var btn = w.querySelector('.wish-close');
     function close() { w.classList.remove('show'); document.removeEventListener('keydown', esc); setTimeout(function () { w.remove(); }, 300); }
     function esc(e) { if (e.key === 'Escape') close(); }
-    w.addEventListener('click', function (e) { if (e.target === w || e.target === btn) close(); });
+    w.addEventListener('click', function (e) { if (e.target === btn || (ready && (e.target === w || stage.contains(e.target)))) close(); });
     document.addEventListener('keydown', esc);
   }
   var timer = null;
