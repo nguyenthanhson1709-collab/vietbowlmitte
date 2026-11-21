@@ -1026,88 +1026,125 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
 })();
 </script>
 <script>
-/* Weihnachtsmusik: sanftes Piano mit Akkorden und Hall, live im Browser erzeugt (Web Audio).
-   Melodien gemeinfrei: Stille Nacht (1818), Jingle Bells (1857), We Wish You a Merry Christmas (trad.). */
+/* Weihnachtsmusik: fröhliches Piano mit Bass-Begleitung, Schlittenglöckchen und Glockenspiel, live im Browser erzeugt (Web Audio).
+   Melodien gemeinfrei: Jingle Bells (1857), Deck the Halls (trad.), We Wish You a Merry Christmas (trad.). */
+window.VBXmas = (function () {
+  var N = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+  function midi(n) { var m = /^([A-G])(#?)(\d)$/.exec(n); return N[m[1]] + (m[2] ? 1 : 0) + (+m[3] + 1) * 12; }
+  function hz(k) { return 440 * Math.pow(2, (k - 69) / 12); }
+  function seq(s) { return s.trim().split(/\s+/).map(function (t) { var p = t.split(':'); return [p[0], p.length > 1 ? +p[1] : 1]; }); }
+  function chord(c) { var m = /^([A-G]#?)(m?)(7?)$/.exec(c), r = N[m[1][0]] + (m[1][1] ? 1 : 0); return { r: r, iv: [0, m[2] ? 3 : 4, 7].concat(m[3] ? [10] : []) }; }
+  var SONGS = [
+    { bpm: 152, meter: 4, pick: 0, /* Jingle Bells: Strophe + Refrain zweimal */
+      notes: seq('G4 E5 D5 C5 G4:3 G4:.5 G4:.5 G4 E5 D5 C5 A4:4 A4 F5 E5 D5 B4:4 G5 G5 F5 D5 E5:4 G4 E5 D5 C5 G4:4 G4 E5 D5 C5 A4:3 A4 A4 F5 E5 D5 G5 G5 G5 G5 A5 G5 F5 D5 C5:2 R:2 ' +
+        'E5 E5 E5:2 E5 E5 E5:2 E5 G5 C5:1.5 D5:.5 E5:4 F5 F5 F5:1.5 F5:.5 F5 E5 E5 E5:.5 E5:.5 E5 D5 D5 E5 D5:2 G5:2 E5 E5 E5:2 E5 E5 E5:2 E5 G5 C5:1.5 D5:.5 E5:4 F5 F5 F5:1.5 F5:.5 F5 E5 E5 E5:.5 E5:.5 G5 G5 F5 D5 C5:2 R:2 ' +
+        'E5 E5 E5:2 E5 E5 E5:2 E5 G5 C5:1.5 D5:.5 E5:4 F5 F5 F5:1.5 F5:.5 F5 E5 E5 E5:.5 E5:.5 E5 D5 D5 E5 D5:2 G5:2 E5 E5 E5:2 E5 E5 E5:2 E5 G5 C5:1.5 D5:.5 E5:4 F5 F5 F5:1.5 F5:.5 F5 E5 E5 E5:.5 E5:.5 G5 G5 F5 D5 C5:3 G4:1 C5:4'),
+      chords: seq('C:4 C:4 C:4 F:4 F:4 G:4 G7:4 C:4 C:4 C:4 C:4 F:4 F:4 G:4 G7:4 C:4 ' +
+        'C:4 C:4 C:4 C:4 F:4 C:4 D7:4 G7:4 C:4 C:4 C:4 C:4 F:4 C:4 G7:4 C:4 ' +
+        'C:4 C:4 C:4 C:4 F:4 C:4 D7:4 G7:4 C:4 C:4 C:4 C:4 F:4 C:4 G7:4 C:4 C:4') },
+    { bpm: 138, meter: 4, pick: 0, /* Deck the Halls */
+      notes: seq('G5:1.5 F5:.5 E5 D5 C5 D5 E5 C5 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5 B4 C5:2 G5:1.5 F5:.5 E5 D5 C5 D5 E5 C5 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5 B4 C5:2 ' +
+        'D5:1.5 E5:.5 F5 D5 E5:1.5 F5:.5 G5 D5 E5:.5 F#5:.5 G5 A5:.5 B5:.5 C6 B5 A5 G5:2 G5:1.5 F5:.5 E5 D5 C5 D5 E5 C5 A5:.5 A5:.5 A5:.5 A5:.5 G5:1.5 F5:.5 E5 D5 C5:2'),
+      chords: seq('C:4 C:4 G7:2 C:2 G7:2 C:2 C:4 C:4 G7:2 C:2 G7:2 C:2 G:4 C:2 G:2 D7:4 G:4 C:4 C:4 F:2 C:2 G7:2 C:2') },
+    { bpm: 160, meter: 3, pick: 1, /* We Wish You a Merry Christmas, zweimal */
+      notes: seq('D5 G5 G5:.5 A5:.5 G5:.5 F#5:.5 E5 C5 E5 A5 A5:.5 B5:.5 A5:.5 G5:.5 F#5 D5 D5 B5 B5:.5 C6:.5 B5:.5 A5:.5 G5 E5 D5:.5 D5:.5 E5 A5 F#5 G5:2 ' +
+        'D5 G5 G5:.5 A5:.5 G5:.5 F#5:.5 E5 C5 E5 A5 A5:.5 B5:.5 A5:.5 G5:.5 F#5 D5 D5 B5 B5:.5 C6:.5 B5:.5 A5:.5 G5 E5 D5:.5 D5:.5 E5 A5 F#5 G5:3'),
+      chords: seq('D7:1 G:3 C:3 A7:3 D:3 B7:3 Em:3 C:2 D7:1 G:2 D7:1 G:3 C:3 A7:3 D:3 B7:3 Em:3 C:2 D7:1 G:3') }
+  ];
+  var noise = null;
+  function create(ctx) {
+    var master = ctx.createGain(); master.gain.value = 0;
+    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 9000; lp.Q.value = 0.3;
+    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3;
+    master.connect(lp); lp.connect(comp); comp.connect(ctx.destination);
+    var len = Math.floor(ctx.sampleRate * 1.8), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (var c = 0; c < 2; c++) { var d = ir.getChannelData(c); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.5); }
+    var conv = ctx.createConvolver(); conv.buffer = ir;
+    var rev = ctx.createGain(); rev.gain.value = 0.16; rev.connect(conv); conv.connect(master);
+    noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    var nd = noise.getChannelData(0); for (var j = 0; j < nd.length; j++) nd[j] = Math.random() * 2 - 1;
+    function out(g, dry, wet) { var dg = ctx.createGain(); dg.gain.value = dry; g.connect(dg); dg.connect(master); if (wet) { var wg = ctx.createGain(); wg.gain.value = wet; g.connect(wg); wg.connect(rev); } }
+    function osc(type, f, g, gain, t, end) { var o = ctx.createOscillator(), og = ctx.createGain(); o.type = type; o.frequency.value = f; og.gain.value = gain; o.connect(og); og.connect(g); o.start(t); o.stop(end); }
+    /* heller Klavierton mit klarem Anschlag */
+    function piano(f, t, vol, l) {
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.006);
+      g.gain.setTargetAtTime(vol * 0.35, t + 0.006, 0.18); g.gain.setTargetAtTime(0, t + l, 0.09);
+      out(g, 0.9, 1);
+      osc('triangle', f, g, 1, t, t + l + 0.8); osc('sine', f * 2, g, 0.32, t, t + l + 0.8); osc('sine', f * 3, g, 0.1, t, t + l + 0.8); osc('sine', f * 4.01, g, 0.05, t, t + l + 0.8);
+    }
+    /* Glockenspiel, leise eine Oktave über der Melodie */
+    function bell(f, t, vol) {
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.003); g.gain.setTargetAtTime(0, t + 0.003, 0.28);
+      out(g, 0.7, 1.4);
+      osc('sine', f, g, 1, t, t + 1.8); osc('sine', f * 2.76, g, 0.22, t, t + 1.8);
+    }
+    /* Schlittenglöckchen: kurzes, helles Rascheln */
+    function sleigh(t, vol) {
+      [0, 0.022].forEach(function (dt, i) {
+        var s = ctx.createBufferSource(); s.buffer = noise;
+        var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7500;
+        var bp = ctx.createBiquadFilter(); bp.type = 'peaking'; bp.frequency.value = 10500; bp.gain.value = 9; bp.Q.value = 2;
+        var g = ctx.createGain(), v = vol * (i ? 0.6 : 1), at = t + dt;
+        g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(v, at + 0.004); g.gain.setTargetAtTime(0, at + 0.004, 0.035);
+        s.connect(hp); hp.connect(bp); bp.connect(g); out(g, 1, 0.3);
+        s.start(at, Math.random() * 0.8, 0.2);
+      });
+    }
+    function sched(i, start) {
+      var song = SONGS[i], b = 60 / song.bpm, t = start, ev = [];
+      song.notes.forEach(function (n) {
+        if (n[0] !== 'R') {
+          var f = hz(midi(n[0])), l = Math.max(0.12, n[1] * b * 0.9);
+          ev.push([t, piano, f, t, 0.13, l]); ev.push([t, bell, f * 2, t, 0.03]);
+        }
+        t += n[1] * b;
+      });
+      var end = t, beat = 0, tc = start;
+      song.chords.forEach(function (c) {
+        var ch = chord(c[0]), root = 36 + ch.r; if (root < 40) root += 12;
+        for (var k = 0; k < c[1]; k++, beat++) {
+          var bt = tc + k * b, pos = (beat - song.pick + song.meter * 4) % song.meter;
+          if (pos === 0) ev.push([bt, piano, hz(root), bt, 0.15, b * 0.85]);
+          else if (song.meter === 4 && pos === 2) ev.push([bt, piano, hz(root + 7), bt, 0.13, b * 0.85]);
+          else ch.iv.forEach(function (iv) { var m = 55 + ((ch.r + iv) % 12); ev.push([bt, piano, hz(m), bt, 0.045, b * 0.35]); });
+          /* Schlittenglöckchen auf jeder Achtel, betont auf 2 und 4 */
+          var acc = song.meter === 4 ? (pos % 2 ? 0.11 : 0.06) : (pos ? 0.06 : 0.1);
+          ev.push([bt, sleigh, bt, acc]); ev.push([bt + b / 2, sleigh, bt + b / 2, 0.04]);
+        }
+        tc += c[1] * b;
+      });
+      ev.sort(function (x, y) { return x[0] - y[0]; });
+      return { ev: ev, end: Math.max(end, tc) + 2 * b };
+    }
+    function fire(e) { e[1].apply(null, e.slice(2)); }
+    return { master: master, sched: sched, fire: fire };
+  }
+  return { create: create, count: SONGS.length };
+})();
 (function () {
   var btn = document.getElementById('music'); if (!btn) return;
   var AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) { btn.hidden = true; return; }
-  var N = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
-  function midi(n) { var m = /^([A-G])(#?)(\d)$/.exec(n); return N[m[1]] + (m[2] ? 1 : 0) + (+m[3] + 1) * 12; }
-  function hz(k) { return 440 * Math.pow(2, (k - 69) / 12); }
-  function seq(s) { return s.trim().split(/\s+/).map(function (t) { var p = t.split(':'); return [p[0], +p[1]]; }); }
-  var SONGS = [
-    { bpm: 60, tr: -12, minor: '', notes: seq('G5:1.5 A5:.5 G5:1 E5:3 G5:1.5 A5:.5 G5:1 E5:3 D6:2 D6:1 B5:3 C6:2 C6:1 G5:3 A5:2 A5:1 C6:1.5 B5:.5 A5:1 G5:1.5 A5:.5 G5:1 E5:3 A5:2 A5:1 C6:1.5 B5:.5 A5:1 G5:1.5 A5:.5 G5:1 E5:3 D6:2 D6:1 F6:1.5 D6:.5 B5:1 C6:3 E6:3 C6:1 G5:1 E5:1 G5:1.5 F5:.5 D5:1 C5:6'),
-      chords: seq('C3:3 C3:3 C3:3 C3:3 G2:3 G2:3 C3:3 C3:3 F2:3 F2:3 C3:3 C3:3 F2:3 F2:3 C3:3 C3:3 G2:3 G2:3 C3:3 C3:3 G2:3 G2:3 C3:6') },
-    { bpm: 92, tr: -12, minor: '', notes: seq('E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 E5:1 D5:1 D5:1 E5:1 D5:2 G5:2 E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 G5:1 G5:1 F5:1 D5:1 C5:4'),
-      chords: seq('C3:4 C3:4 C3:4 C3:4 F2:4 C3:4 G2:4 G2:4 C3:4 C3:4 C3:4 C3:4 F2:4 C3:4 G2:4 C3:4') },
-    { bpm: 80, tr: -12, minor: 'AE', notes: seq('D5:1 G5:1 G5:.5 A5:.5 G5:.5 F#5:.5 E5:1 C5:1 E5:1 A5:1 A5:.5 B5:.5 A5:.5 G5:.5 F#5:1 D5:1 D5:1 B5:1 B5:.5 C6:.5 B5:.5 A5:.5 G5:1 E5:1 D5:.5 D5:.5 E5:1 A5:1 F#5:1 G5:3'),
-      chords: seq('D3:1 G2:3 C3:3 A2:3 D3:3 E3:3 C3:3 D3:3 G2:3') }
-  ];
-  var ctx, master, rev, playing = false, timer = null, songIdx = 0, t0 = 0, queue = [];
-  function setup() {
-    ctx = new AC();
-    master = ctx.createGain(); master.gain.value = 0;
-    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2200; lp.Q.value = 0.3;
-    var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 3;
-    master.connect(lp); lp.connect(comp); comp.connect(ctx.destination);
-    var len = Math.floor(ctx.sampleRate * 3), ir = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (var c = 0; c < 2; c++) { var d = ir.getChannelData(c); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
-    var conv = ctx.createConvolver(); conv.buffer = ir;
-    rev = ctx.createGain(); rev.gain.value = 0.32; rev.connect(conv); conv.connect(master);
-  }
-  function out(g, dry) { var d = ctx.createGain(); d.gain.value = dry; g.connect(d); d.connect(master); g.connect(rev); }
-  /* weicher Klavierton: Grundton + leise Obertöne, sanfter Anschlag, langes Ausklingen */
-  function piano(f, t, vol, len) {
-    var g = ctx.createGain();
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.02);
-    g.gain.setTargetAtTime(vol * 0.45, t + 0.02, 0.25); g.gain.setTargetAtTime(0, t + len, 0.35);
-    out(g, 0.8);
-    [[1, 1, 'sine'], [2, .18, 'sine'], [3, .05, 'sine'], [1, .12, 'triangle']].forEach(function (h) {
-      var o = ctx.createOscillator(), og = ctx.createGain(); o.type = h[2]; o.frequency.value = f * h[0]; og.gain.value = h[1];
-      o.connect(og); og.connect(g); o.start(t); o.stop(t + len + 2);
-    });
-  }
-  /* leiser Akkord-Teppich */
-  function pad(freqs, t, vol, len) {
-    var g = ctx.createGain();
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.5); g.gain.setTargetAtTime(0, t + len, 0.5);
-    out(g, 0.6);
-    freqs.forEach(function (f, i) {
-      [0, 4].forEach(function (cents) {
-        var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.detune.value = cents + (i - 1) * 2; o.connect(g); o.start(t); o.stop(t + len + 3);
-      });
-    });
-  }
-  function schedule(song, start) {
-    var b = 60 / song.bpm, t = start;
-    song.notes.forEach(function (n) { var k = midi(n[0]) + song.tr; queue.push(['p', hz(k), t, .11, Math.max(.4, n[1] * b * .95)]); t += n[1] * b; });
-    var tc = start;
-    song.chords.forEach(function (n) {
-      var r = midi(n[0]), third = song.minor.indexOf(n[0][0]) >= 0 ? 3 : 4, len = n[1] * b;
-      queue.push(['b', [hz(r)], tc, .07, len]);
-      queue.push(['b', [hz(r + 12), hz(r + 12 + third), hz(r + 19)], tc, .022, len]);
-      tc += len;
-    });
-    return t + 3 * b;
-  }
+  var ctx, eng, playing = false, timer = null, songIdx = 0, t0 = 0, queue = [];
   function pump() {
-    var ahead = ctx.currentTime + 1.5;
-    while (queue.length && queue[0][2] < ahead) { var q = queue.shift(); if (q[0] === 'p') piano(q[1], q[2], q[3], q[4]); else pad(q[1], q[2], q[3], q[4]); }
+    var ahead = ctx.currentTime + 1;
+    while (queue.length && queue[0][0] < ahead) eng.fire(queue.shift());
     if (!queue.length) {
-      t0 = schedule(SONGS[songIdx], Math.max(t0, ctx.currentTime + 0.1)); songIdx = (songIdx + 1) % SONGS.length;
-      queue.sort(function (a, b) { return a[2] - b[2]; });
+      var r = eng.sched(songIdx, Math.max(t0, ctx.currentTime + 0.1));
+      queue = r.ev; t0 = r.end; songIdx = (songIdx + 1) % VBXmas.count;
     }
   }
   function start() {
-    if (!ctx) setup();
+    if (!ctx) { ctx = new AC(); eng = VBXmas.create(ctx); }
     ctx.resume(); queue = []; t0 = ctx.currentTime + 0.2;
-    master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.6);
-    pump(); timer = setInterval(pump, 250); playing = true;
+    eng.master.gain.cancelScheduledValues(ctx.currentTime); eng.master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.3);
+    pump(); timer = setInterval(pump, 200); playing = true;
   }
   function stop() {
     playing = false; clearInterval(timer); queue = [];
-    master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0, ctx.currentTime, 0.25);
+    eng.master.gain.cancelScheduledValues(ctx.currentTime); eng.master.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
     setTimeout(function () { if (!playing) ctx.suspend(); }, 1200);
   }
   btn.addEventListener('click', function () {
