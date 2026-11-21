@@ -430,7 +430,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
 
 <header class="top" id="top">
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="VietBowl Potsdamer Platz, zum Seitenanfang">
+    <a class="logo" href="./" aria-label="VietBowl Potsdamer Platz, zum Seitenanfang">
       <img src="img/449b8bbe05.webp" alt="VietBowl" width="380" height="200"><span>Potsdamer Platz</span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="nav">Menü</button>
@@ -702,6 +702,13 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
   });
   document.querySelectorAll('.nav a').forEach(function (a) {
     a.addEventListener('click', function () { top.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); });
+  });
+  /* logo: back to the start of the page (clean URL, menu closed) */
+  document.querySelector('.logo').addEventListener('click', function (e) {
+    e.preventDefault();
+    top.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false');
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   var tabs = document.querySelectorAll('.tab');
