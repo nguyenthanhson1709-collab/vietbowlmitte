@@ -450,7 +450,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
 .music[aria-pressed="true"] .eq { display: inline-flex; }
 .music.hint { animation: musichint 1.6s ease-in-out 3; }
 @keyframes musichint { 0%,100% { box-shadow: 0 10px 24px rgba(0,0,0,.45), 0 0 0 0 rgba(232,195,106,.6); } 50% { box-shadow: 0 10px 24px rgba(0,0,0,.45), 0 0 0 10px rgba(232,195,106,0); } }
-@media (max-width: 900px) { .music { left: 12px; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + 58px); height: 42px; padding: 0 12px 0 10px; font-size: .68rem; } }
+@media (max-width: 900px) { .music { left: 12px; width: 46px; height: 46px; padding: 0; justify-content: center; gap: 0; } .music > span:last-child { display: none; } .dock { padding-left: 54px; } }
 @media (prefers-reduced-motion: reduce) { .music .eq i, .music.hint { animation: none; } .music .eq i { height: 10px; } }
 .dock.show { opacity: 1; transform: none; pointer-events: auto; }
 .dock-top { width: 52px; height: 52px; border-radius: 50%; border: 0; background: var(--chili); color: #1C0F05; display: grid; place-items: center; cursor: pointer; box-shadow: 0 10px 24px rgba(0,0,0,.45); transition: transform .15s ease; }
@@ -497,7 +497,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
       <a href="#menu-orbit">Speisekarte</a>
       <a href="#galerie">Galerie</a>
       <a href="#kontakt">Kontakt</a>
-      <a class="btn btn-chili" href="#kontakt">Tisch reservieren</a>
+      <a class="btn btn-chili" href="#reservieren">Tisch reservieren</a>
     </nav>
   </div>
 </header>
@@ -696,7 +696,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
         <a class="btn btn-ghost" href="https://www.google.com/maps?cid=8546212507645777419" target="_blank" rel="noopener">Bewertungen lesen</a>
       </div>
     </div>
-    <div class="reserve-embed">
+    <div class="reserve-embed" id="reservieren">
       <div class="reserve-card" id="reserveCard">
         <span class="eyebrow">Online reservieren</span>
         <h3>Sichere dir deinen Tisch</h3>
@@ -947,7 +947,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
 <button type="button" class="music hint" id="music" aria-pressed="false" aria-label="Weihnachtsmusik an oder aus" title="Weihnachtsmusik an oder aus"><svg class="note" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 18.5a3 3 0 1 1-2-2.83V5.2l12-2.7v12a3 3 0 1 1-2-2.83V7.1l-8 1.8v9.6z"/></svg><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span>Musik</span></button>
 <div class="dock" id="dock">
   <button type="button" class="dock-btn dock-menu" id="dockSpeise">Speisekarte</button>
-  <a class="dock-btn dock-book" href="#kontakt">Tisch reservieren</a>
+  <a class="dock-btn dock-book" href="#reservieren">Tisch reservieren</a>
   <button type="button" class="dock-top" id="dockTop" aria-label="Nach oben"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <script>
@@ -1094,6 +1094,33 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     if (!ctx || !playing) return;
     if (document.hidden) ctx.suspend(); else ctx.resume();
   });
+})();
+</script>
+<script>
+/* "Tisch reservieren": direkt zum Reservierungsformular, komplett sichtbar zwischen Kopfzeile und unterer Leiste */
+(function () {
+  function target() { var w = document.getElementById('reservieren'); return w && (w.querySelector('iframe') || w.querySelector('.reserve-card') || w); }
+  function go(smooth) {
+    var el = target(); if (!el) return;
+    var head = document.querySelector('.top'), dock = document.getElementById('dock');
+    var hb = head ? head.getBoundingClientRect().bottom : 0; if (hb < 0) hb = 0;
+    var vh = window.innerHeight, foot = 12;
+    if (dock && matchMedia('(max-width: 900px)').matches) foot = dock.offsetHeight + 24;
+    var r = el.getBoundingClientRect(), avail = vh - hb - foot;
+    var off = r.height < avail ? (avail - r.height) / 2 : 8;
+    var y = window.scrollY + r.top - hb - Math.max(8, off);
+    window.scrollTo({ top: Math.max(0, y), behavior: smooth ? 'smooth' : 'auto' });
+  }
+  var until = 0;
+  window.addEventListener('message', function (e) { if (Date.now() < until && e.data && e.data.vietbowl === 'height') setTimeout(function () { go(true); }, 60); });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#reservieren"]'); if (!a) return;
+    e.preventDefault(); until = Date.now() + 2500;
+    if (history.replaceState) history.replaceState(null, '', '#reservieren');
+    setTimeout(function () { go(true); }, 30);
+    setTimeout(function () { go(true); }, 900);
+  });
+  if (location.hash === '#reservieren') { until = Date.now() + 4000; window.addEventListener('load', function () { setTimeout(function () { go(false); }, 300); }); }
 })();
 </script>
 </body>
