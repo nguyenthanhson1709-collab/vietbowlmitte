@@ -117,6 +117,30 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .top:not(.open) .nav { display: none; }
 }
 
+/* language flags */
+.top-actions { display: contents; }
+@media (min-width: 901px) { .lang-slot { order: 5; } }
+@media (min-width: 901px) { .nav { margin-left: auto; } }
+.logo span { white-space: nowrap; }
+@media (max-width: 420px) { .logo span { font-size: 1.15rem; } }
+.lang { display: flex; gap: 8px; align-items: center; position: relative; }
+.lang button { all: unset; box-sizing: border-box; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid rgba(244,236,229,.25); opacity: .6; transition: opacity .2s, border-color .2s, transform .2s; display: block; }
+.lang button svg { display: block; width: 100%; height: 100%; }
+.lang button:hover { opacity: 1; transform: scale(1.08); }
+.lang button[aria-pressed="true"] { opacity: 1; border-color: var(--chili); }
+.lang button:focus-visible { outline: 2px solid var(--chili); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .top-actions { display: flex; align-items: center; gap: 10px; }
+  .menu-toggle { padding: 8px 12px; }
+  .lang { gap: 0; }
+  .lang button:not([aria-pressed="true"]) { display: none; }
+  .lang.open { flex-direction: column; gap: 8px; }
+  .lang.open button { display: block; }
+  .lang.open { position: absolute; top: 50%; transform: translateY(-15px); z-index: 60; background: var(--herb-deep); padding: 0 0 8px; border-radius: 999px; }
+  .lang-slot { width: 30px; height: 30px; position: relative; }
+}
+@media (max-width: 370px) { .logo span { font-size: 1.1rem; } }
+
 /* Hero */
 .hero { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; min-height: max(520px, calc(100svh - 92px - env(safe-area-inset-top, 0px))); background: var(--herb); color: var(--on-herb); padding-block: 40px clamp(90px, 10vw, 130px); }
 .hero > .wrap { width: 100%; }
@@ -425,6 +449,17 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
   footer { padding-bottom: 76px; }
 }
 </style>
+<script>
+/* language: ?lang= > saved choice > German */
+(function () {
+  var L = ['de', 'en', 'vi'], q = (location.search.match(/[?&]lang=(de|en|vi)/) || [])[1], s = null;
+  try { s = localStorage.getItem('vb-lang'); } catch (e) {}
+  window.VB_LANG = q || (L.indexOf(s) >= 0 ? s : 'de');
+  window.VB_I18N = {"Menü": {"en": "Menu", "vi": "Menu"}, "Küche": {"en": "Kitchen", "vi": "Ẩm thực"}, "Speisekarte": {"en": "Menu", "vi": "Thực đơn"}, "Galerie": {"en": "Gallery", "vi": "Hình ảnh"}, "Lieferung": {"en": "Delivery", "vi": "Giao hàng"}, "Kontakt": {"en": "Contact", "vi": "Liên hệ"}, "Tisch reservieren": {"en": "Book a table", "vi": "Đặt bàn"}, "Adresse": {"en": "Address", "vi": "Địa chỉ"}, "Geöffnet": {"en": "Open", "vi": "Mở cửa"}, "Täglich 11:30–23:00": {"en": "Daily 11:30–23:00", "vi": "Hằng ngày 11:30–23:00"}, "Telefon": {"en": "Phone", "vi": "Điện thoại"}, "Willkommen bei uns": {"en": "Welcome", "vi": "Chào mừng bạn"}, "Küche und Sushi im Herzen der Stadt.": {"en": "Kitchen and sushi in the heart of the city.", "vi": "Ẩm thực và sushi giữa lòng thành phố."}, "Direkt am Marlene-Dietrich-Platz, neben dem berühmten": {"en": "Right on Marlene-Dietrich-Platz, next to the famous", "vi": "Ngay tại Marlene-Dietrich-Platz, cạnh"}, "Piano-See": {"en": "Piano Lake", "vi": "hồ Piano-See"}, ", servieren wir euch vietnamesische Spezialitäten und frisches Sushi.": {"en": ", we serve Vietnamese specialities and fresh sushi.", "vi": " nổi tiếng, chúng tôi phục vụ các món đặc sản Việt Nam và sushi tươi."}, "Ob Mittagspause oder Abendessen vor dem Kino oder Theater – genießt authentische Küche mit frischen Zutaten in entspannter Atmosphäre, mitten im Herzen Berlins.": {"en": "Whether it's a lunch break or dinner before the cinema or theatre, enjoy authentic food made with fresh ingredients in a relaxed atmosphere, right in the heart of Berlin.", "vi": "Dù là bữa trưa hay bữa tối trước giờ xem phim, xem kịch, hãy thưởng thức món ăn chuẩn vị từ nguyên liệu tươi trong không gian thư thái, ngay giữa lòng Berlin."}, "Komm vorbei, setz dich, iss mit uns!": {"en": "Come by, take a seat, eat with us!", "vi": "Ghé qua, ngồi xuống, cùng ăn với chúng tôi!"}, "Was darf's heute sein?": {"en": "What will it be today?", "vi": "Hôm nay bạn muốn ăn gì?"}, "Unsere Küche auf einen Blick": {"en": "Our kitchen at a glance", "vi": "Thực đơn trong nháy mắt"}, "Salate": {"en": "Salads", "vi": "Salad"}, "Nudeln": {"en": "Noodles", "vi": "Mì & bún"}, "Reis": {"en": "Rice", "vi": "Cơm"}, "Tippe auf eine Kategorie": {"en": "Tap a category", "vi": "Chọn một món"}, "Pho, Salate, Nudeln, Reis, Bowls oder Sushi: Wähle aus, worauf du Lust hast.": {"en": "Pho, salads, noodles, rice, bowls or sushi: pick what you're craving.", "vi": "Phở, salad, mì, cơm, bowl hay sushi: chọn món bạn đang thèm."}, "Was heute auf den Tisch kommt": {"en": "What's on the table today", "vi": "Hôm nay có gì trên bàn"}, "Unsere Speisekarte": {"en": "Our menu", "vi": "Thực đơn của chúng tôi"}, "Mittagskarte": {"en": "Lunch menu", "vi": "Thực đơn trưa"}, "Ein Tag am Potsdamer Platz": {"en": "A day at Potsdamer Platz", "vi": "Một ngày ở Potsdamer Platz"}, "Von der Mittagspause bis nach dem Kino.": {"en": "From lunch break to after the movies.", "vi": "Từ giờ nghỉ trưa đến sau buổi xem phim."}, "Mittag zwischen zwei Terminen": {"en": "Lunch between two meetings", "vi": "Bữa trưa giữa hai cuộc hẹn"}, "Schnell, frisch und satt zurück ins Büro. Unsere Mittagskarte ist für genau diese Stunde gemacht.": {"en": "Quick, fresh and full on your way back to the office. Our lunch menu is made for exactly this hour.", "vi": "Nhanh, tươi và no bụng trước khi về văn phòng. Thực đơn trưa của chúng tôi được làm cho đúng khoảng thời gian này."}, "Vor dem Kino oder Theater": {"en": "Before the cinema or theatre", "vi": "Trước giờ xem phim hay xem kịch"}, "Ein paar Schritte bis zu den Kinos und Bühnen am Platz. Reserviere einen Tisch, wir sorgen dafür, dass du pünktlich bist.": {"en": "Just a few steps from the cinemas and stages on the square. Book a table and we'll make sure you're on time.", "vi": "Chỉ vài bước là tới các rạp phim và sân khấu quanh quảng trường. Đặt bàn trước, chúng tôi lo để bạn kịp giờ."}, "Später Hunger": {"en": "Late hunger", "vi": "Đói muộn"}, "Unsere Küche kocht jeden Tag bis 22:45 Uhr, auch am Wochenende. Danach darfst du gern sitzen bleiben und den Abend in Ruhe ausklingen lassen.": {"en": "Our kitchen cooks every day until 10:45 pm, weekends included. After that, you're welcome to stay and let the evening wind down at your own pace.", "vi": "Bếp của chúng tôi nấu mỗi ngày đến 22:45, cả cuối tuần. Sau đó bạn cứ thoải mái ngồi lại, thong thả tận hưởng nốt buổi tối."}, "Schau, was gerade kocht!": {"en": "See what's cooking!", "vi": "Xem bếp đang nấu gì!"}, "Aus unserer Küche": {"en": "From our kitchen", "vi": "Từ căn bếp của chúng tôi"}, "Hunger zu Hause?": {"en": "Hungry at home?", "vi": "Đói ở nhà?"}, "Liefern lassen oder abholen.": {"en": "Get it delivered or pick it up.", "vi": "Gọi giao tận nơi hoặc đến lấy."}, "Abholung": {"en": "Pick-up", "vi": "Đến lấy"}, "Telefonisch unter 030 25931200": {"en": "By phone at 030 25931200", "vi": "Gọi điện số 030 25931200"}, "Lust, jemandem eine Freude zu machen?": {"en": "Want to make someone happy?", "vi": "Muốn làm ai đó vui?"}, "Gutschein verschenken": {"en": "Give a voucher", "vi": "Tặng phiếu quà tặng"}, "Wir freuen uns auf dich": {"en": "We look forward to seeing you", "vi": "Hẹn gặp bạn"}, "Anfahrt": {"en": "Getting here", "vi": "Đường đến"}, "Öffnungszeiten": {"en": "Opening hours", "vi": "Giờ mở cửa"}, "Montag bis Sonntag": {"en": "Monday to Sunday", "vi": "Thứ Hai đến Chủ Nhật"}, "11:30–23:00 Uhr": {"en": "11:30–23:00", "vi": "11:30–23:00"}, "E-Mail": {"en": "Email", "vi": "Email"}, "Route planen": {"en": "Get directions", "vi": "Chỉ đường"}, "Bewertungen lesen": {"en": "Read reviews", "vi": "Xem đánh giá"}, "Online reservieren": {"en": "Book online", "vi": "Đặt bàn online"}, "Sichere dir deinen Tisch": {"en": "Secure your table", "vi": "Giữ bàn cho bạn"}, "Wähle Personenzahl, Datum und Uhrzeit direkt in unserem Online-Reservierungssystem.": {"en": "Choose party size, date and time directly in our online booking system.", "vi": "Chọn số người, ngày và giờ ngay trên hệ thống đặt bàn online của chúng tôi."}, "Jetzt Tisch reservieren": {"en": "Book a table now", "vi": "Đặt bàn ngay"}, "Lieber telefonisch?": {"en": "Prefer to call?", "vi": "Muốn gọi điện?"}, "Gruppen ab 20 Personen bitte per E-Mail an": {"en": "Groups of 20 or more, please email", "vi": "Nhóm từ 20 người vui lòng gửi email tới"}, "Bis bald am Marlene-Dietrich-Platz!": {"en": "See you soon at Marlene-Dietrich-Platz!", "vi": "Hẹn sớm gặp lại ở Marlene-Dietrich-Platz!"}, "Weitere Standorte": {"en": "Other locations", "vi": "Các chi nhánh khác"}, "Folge uns": {"en": "Follow us", "vi": "Theo dõi chúng tôi"}, "Impressum": {"en": "Legal notice", "vi": "Thông tin pháp lý"}, "Datenschutz": {"en": "Privacy", "vi": "Bảo mật"}, "VietBowl Potsdamer Platz, zum Seitenanfang": {"en": "VietBowl Potsdamer Platz, back to top", "vi": "VietBowl Potsdamer Platz, về đầu trang"}, "Hauptnavigation": {"en": "Main navigation", "vi": "Điều hướng chính"}, "Auf einen Blick": {"en": "At a glance", "vi": "Tóm tắt"}, "VietBowl Potsdamer Platz mit Terrasse am Wasser in der Abenddämmerung": {"en": "VietBowl Potsdamer Platz with its waterside terrace at dusk", "vi": "VietBowl Potsdamer Platz với sân hiên bên mặt nước lúc chiều tối"}, "Schließen": {"en": "Close", "vi": "Đóng"}, "Vorherige Seite": {"en": "Previous page", "vi": "Trang trước"}, "Nächste Seite": {"en": "Next page", "vi": "Trang sau"}, "Seite": {"en": "Page", "vi": "Trang"}, "Gedeckter Tisch mit Pho, Bowls, Edamame und Drinks": {"en": "Table set with pho, bowls, edamame and drinks", "vi": "Bàn ăn với phở, bowl, đậu nành Nhật và đồ uống"}, "Vietnamesischer Filterkaffee": {"en": "Vietnamese drip coffee", "vi": "Cà phê phin Việt Nam"}, "Knusprige Ente mit Rettich und Curry": {"en": "Crispy duck with radish and curry", "vi": "Vịt giòn với củ cải và cà ri"}, "Vorspeisenteller mit Wan Tan und Frühlingsrollen": {"en": "Starter platter with wontons and spring rolls", "vi": "Đĩa khai vị với hoành thánh và chả giò"}, "Tiger Bier mit Minze und Orange": {"en": "Tiger beer with mint and orange", "vi": "Bia Tiger với bạc hà và cam"}, "Inside Out Roll mit Tobiko": {"en": "Inside-out roll with tobiko", "vi": "Inside-out roll với trứng cá tobiko"}, "Knusprige Ente auf Reis und Salat": {"en": "Crispy duck on rice and salad", "vi": "Vịt giòn với cơm và salad"}, "Reis-Bowl mit Gemüse und Tiger Bier": {"en": "Rice bowl with vegetables and Tiger beer", "vi": "Cơm bowl rau củ và bia Tiger"}, "Nach oben": {"en": "Back to top", "vi": "Lên đầu trang"}, "Sprache": {"en": "Language", "vi": "Ngôn ngữ"}, "Pho & Suppen": {"en": "Pho & soups", "vi": "Phở & súp"}, "PHO ✦ KRÄFTIGE BRÜHE ✦ FRISCHE KRÄUTER ✦ ": {"en": "PHO ✦ RICH BROTH ✦ FRESH HERBS ✦ ", "vi": "PHỞ ✦ NƯỚC DÙNG ĐẬM ĐÀ ✦ RAU THƠM ✦ "}, "Stundenlang gezogene Brühe, Reisnudeln, zartes Rindfleisch und ein Berg frischer Kräuter.": {"en": "Broth simmered for hours, rice noodles, tender beef and a mountain of fresh herbs.", "vi": "Nước dùng ninh nhiều giờ, bánh phở, thịt bò mềm và cả rổ rau thơm."}, "SALATE ✦ KNACKIG ✦ MANGO & KRÄUTER ✦ ": {"en": "SALADS ✦ CRISP ✦ MANGO & HERBS ✦ ", "vi": "SALAD ✦ GIÒN TƯƠI ✦ XOÀI & RAU THƠM ✦ "}, "Frische Blattsalate mit Mango, Kräutern und Radieschen, mit Lachs, Ente oder Tofu.": {"en": "Fresh leafy salads with mango, herbs and radish, with salmon, duck or tofu.", "vi": "Rau xà lách tươi với xoài, rau thơm và củ cải đỏ, ăn kèm cá hồi, vịt hoặc đậu phụ."}, "NUDELN ✦ HEISS AUS DEM WOK ✦ ": {"en": "NOODLES ✦ HOT FROM THE WOK ✦ ", "vi": "MÌ ✦ NÓNG HỔI TỪ CHẢO ✦ "}, "Udon und Reisnudeln aus dem Wok, mit Ente, Rind, Huhn oder Tofu.": {"en": "Wok-tossed udon and rice noodles with duck, beef, chicken or tofu.", "vi": "Mì udon và bún xào chảo, với vịt, bò, gà hoặc đậu phụ."}, "REIS ✦ WOKGEMÜSE ✦ TERIYAKI ✦ ": {"en": "RICE ✦ WOK VEGETABLES ✦ TERIYAKI ✦ ", "vi": "CƠM ✦ RAU XÀO ✦ TERIYAKI ✦ "}, "Duftreis mit knackigem Wokgemüse, Teriyaki und knusprigen Toppings.": {"en": "Fragrant rice with crunchy wok vegetables, teriyaki and crispy toppings.", "vi": "Cơm thơm với rau xào giòn, sốt teriyaki và topping giòn rụm."}, "BOWLS ✦ ALLES IN EINER SCHALE ✦ ": {"en": "BOWLS ✦ ALL IN ONE BOWL ✦ ", "vi": "BOWL ✦ TẤT CẢ TRONG MỘT BÁT ✦ "}, "Reis, Salat, Lachs oder Tofu und hausgemachte Saucen, alles in einer Schale.": {"en": "Rice, salad, salmon or tofu and homemade sauces, all in one bowl.", "vi": "Cơm, salad, cá hồi hoặc đậu phụ và sốt nhà làm, tất cả trong một bát."}, "SUSHI ✦ NIGIRI ✦ MAKI ✦ SASHIMI ✦ ": {"en": "SUSHI ✦ NIGIRI ✦ MAKI ✦ SASHIMI ✦ ", "vi": "SUSHI ✦ NIGIRI ✦ MAKI ✦ SASHIMI ✦ "}, "Nigiri, Maki, Inside Out und Sashimi, frisch gerollt an unserer Sushi-Bar.": {"en": "Nigiri, maki, inside-out rolls and sashimi, freshly rolled at our sushi bar.", "vi": "Nigiri, maki, inside-out và sashimi, cuộn tươi tại quầy sushi của chúng tôi."}, "VIETBOWL ✦ POTSDAMER PLATZ ✦ VIETBOWL ✦ POTSDAMER PLATZ ✦ ": {"en": "VIETBOWL ✦ POTSDAMER PLATZ ✦ VIETBOWL ✦ POTSDAMER PLATZ ✦ ", "vi": "VIETBOWL ✦ POTSDAMER PLATZ ✦ VIETBOWL ✦ POTSDAMER PLATZ ✦ "}};
+  window.vbT = function (t) { var e = window.VB_I18N[t]; return (window.VB_LANG !== 'de' && e && e[window.VB_LANG]) || t; };
+  document.documentElement.lang = window.VB_LANG;
+})();
+</script>
 </head>
 <body>
 
@@ -433,7 +468,14 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     <a class="logo" href="./" aria-label="VietBowl Potsdamer Platz, zum Seitenanfang">
       <img src="img/449b8bbe05.webp" alt="VietBowl" width="380" height="200"><span>Potsdamer Platz</span>
     </a>
+    <div class="top-actions">
+    <div class="lang-slot"><div class="lang" id="lang" role="group" aria-label="Sprache">
+      <button type="button" data-lang="de" aria-label="Deutsch" title="Deutsch"><svg viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="10" fill="#000"/><rect y="10" width="30" height="10" fill="#DD0000"/><rect y="20" width="30" height="10" fill="#FFCE00"/></svg></button>
+      <button type="button" data-lang="en" aria-label="English" title="English"><svg viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#012169"/><path d="M0 0L60 60M60 0L0 60" stroke="#fff" stroke-width="12"/><path d="M0 0L60 60M60 0L0 60" stroke="#C8102E" stroke-width="5"/><path d="M30 0V60M0 30H60" stroke="#fff" stroke-width="18"/><path d="M30 0V60M0 30H60" stroke="#C8102E" stroke-width="10"/></svg></button>
+      <button type="button" data-lang="vi" aria-label="Tiếng Việt" title="Tiếng Việt"><svg viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" fill="#DA251D"/><path fill="#FFFF00" d="M15 6.5l2.47 7.6h8l-6.47 4.7 2.47 7.6L15 21.7l-6.47 4.7 2.47-7.6-6.47-4.7h8z"/></svg></button>
+    </div></div>
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="nav">Menü</button>
+    </div>
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
       <a href="#kueche">Küche</a>
       <a href="#menu-orbit">Speisekarte</a>
@@ -496,7 +538,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
         <circle cx="50" cy="50" r="38" class="ring-arc"/>
       </svg>
       <div class="hub">
-        <svg class="hub-text" viewBox="0 0 200 200" aria-hidden="true">
+        <svg class="hub-text" viewBox="0 0 200 200" aria-hidden="true" data-i18n-dyn>
           <defs><path id="hubPath" d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0"/></defs>
           <text><textPath href="#hubPath" id="hubText" textLength="510" lengthAdjust="spacingAndGlyphs">VIETBOWL ✦ POTSDAMER PLATZ ✦ VIETBOWL ✦ POTSDAMER PLATZ ✦ </textPath></text>
         </svg>
@@ -519,7 +561,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
         <li class="sat" style="--i:5"><button type="button" class="sat-btn" data-dish="sushi" aria-pressed="false"><span class="sat-in"><span class="sat-img" aria-hidden="true"></span><span class="sat-label">Sushi</span></span></button></li>
       </ul>
     </div>
-    <div class="orbit-info" id="orbitInfo" aria-live="polite">
+    <div class="orbit-info" id="orbitInfo" aria-live="polite" data-i18n-dyn>
       <h3 id="orbitInfoTitle">Tippe auf eine Kategorie</h3>
       <p id="orbitInfoText">Pho, Salate, Nudeln, Reis, Bowls oder Sushi: Wähle aus, worauf du Lust hast.</p>
       
@@ -556,7 +598,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
   <div class="book-backdrop" data-book-close></div>
   <div class="book-stage" role="dialog" aria-modal="true" aria-label="Mittagskarte">
     <div class="book-top">
-      <span class="book-title" id="bookTitle">Mittagskarte</span>
+      <span class="book-title" id="bookTitle" data-i18n-dyn>Mittagskarte</span>
       <span class="book-count" id="bookCount" aria-live="polite">1 / 23</span>
       <button type="button" class="book-close" data-book-close aria-label="Schließen">×</button>
     </div>
@@ -655,7 +697,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
           var card = document.getElementById('reserveCard');
           var alt = card.querySelector('.reserve-alt');
           var f = document.createElement('iframe');
-          f.src = base + '/?embed=1&src=web';
+          f.src = base + '/?embed=1&src=web&lang=' + (window.VB_LANG || 'de');
           f.title = 'Tisch reservieren bei VietBowl Potsdamer Platz';
           f.loading = 'lazy';
           card.replaceWith(f);
@@ -770,9 +812,9 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     function show(key) {
       var d = dishes[key];
       btns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.dish === key ? 'true' : 'false'); });
-      var t = d.ring; while (t.length < 46) t += d.ring; ringText.textContent = t;
-      title.textContent = d.name;
-      text.textContent = d.info;
+      var r = vbT(d.ring), t = r; while (t.length < 46) t += r; ringText.textContent = t;
+      title.textContent = vbT(d.name);
+      text.textContent = vbT(d.info);
       if (d.img) {
         dishImg.src = d.img; dishImg.alt = d.name; dishImg.hidden = false;
         dishImg.classList.remove('pop'); void dishImg.offsetWidth; dishImg.classList.add('pop');
@@ -785,11 +827,12 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     }
     function reset() {
       btns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-      ringText.textContent = defaultRing; dishImg.hidden = true; hub.classList.remove('has-dish');
-      title.textContent = 'Tippe auf eine Kategorie';
-      text.textContent = 'Pho, Salate, Nudeln, Reis, Bowls oder Sushi: Wähle aus, worauf du Lust hast.';
+      ringText.textContent = vbT(defaultRing); dishImg.hidden = true; hub.classList.remove('has-dish');
+      title.textContent = vbT('Tippe auf eine Kategorie');
+      text.textContent = vbT('Pho, Salate, Nudeln, Reis, Bowls oder Sushi: Wähle aus, worauf du Lust hast.');
       orbit.classList.remove('paused'); current = null;
     }
+    document.addEventListener('vb-lang', function () { if (current) show(current); else reset(); });
     var lb = document.getElementById('lightbox');
     var lastBtn = null;
     function openLightbox(key, btn) {
@@ -845,7 +888,7 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     function go(n) {
       if (n < 0 || n >= pages.length) return;
       var dir = n > i ? 'turn-next' : 'turn-prev'; i = n;
-      img.src = pages[i]; img.alt = title + ', Seite ' + (i + 1);
+      img.src = pages[i]; img.alt = vbT(title) + ', ' + vbT('Seite') + ' ' + (i + 1);
       img.classList.remove('turn-next', 'turn-prev'); void img.offsetWidth; img.classList.add(dir);
       count.textContent = (i + 1) + ' / ' + pages.length;
       prev.disabled = i === 0; next.disabled = i === pages.length - 1;
@@ -854,10 +897,10 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     }
     function open(b) {
       pages = b.pages; title = b.title; opener = b.btn;
-      titleEl.textContent = title; stage.setAttribute('aria-label', title);
+      titleEl.textContent = vbT(title); stage.setAttribute('aria-label', vbT(title));
       dots.innerHTML = '';
       pages.forEach(function (_, n) {
-        var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', 'Seite ' + (n + 1));
+        var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', vbT('Seite') + ' ' + (n + 1));
         d.addEventListener('click', function () { go(n); }); dots.appendChild(d);
       });
       book.hidden = false; document.body.style.overflow = 'hidden'; i = -1; go(0); book.querySelector('.book-close').focus();
@@ -928,6 +971,41 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
     requestAnimationFrame(tick);
   }
   size(); addEventListener('resize', size); requestAnimationFrame(tick);
+})();
+</script>
+<script>
+/* swap visible texts and labels to the chosen language */
+(function () {
+  var D = window.VB_I18N, ATTR = ['aria-label', 'alt', 'title'];
+  var nodes = [], els = [];
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
+    var p = n.parentNode; if (!p || /^(SCRIPT|STYLE)$/.test(p.nodeName) || p.closest('[data-i18n-dyn]')) return NodeFilter.FILTER_REJECT;
+    var k = n.nodeValue.replace(/\s+/g, ' ').trim(); return D[k] ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
+  while (w.nextNode()) { var n = w.currentNode, v = n.nodeValue; nodes.push({ n: n, k: v.replace(/\s+/g, ' ').trim(), a: v.match(/^\s*/)[0], z: v.match(/\s*$/)[0] }); }
+  document.querySelectorAll('[aria-label],[alt],[title]').forEach(function (el) {
+    if (el.closest('[data-i18n-dyn]') || el.closest('#lang')) return;
+    ATTR.forEach(function (a) { var v = el.getAttribute(a); if (v && D[v.trim()]) els.push({ el: el, a: a, k: v.trim() }); });
+  });
+  function apply(lang) {
+    window.VB_LANG = lang; document.documentElement.lang = lang;
+    nodes.forEach(function (o) { o.n.nodeValue = o.a + (lang === 'de' ? o.k : (D[o.k][lang] || o.k)) + o.z; });
+    els.forEach(function (o) { o.el.setAttribute(o.a, lang === 'de' ? o.k : (D[o.k][lang] || o.k)); });
+    document.querySelectorAll('#lang button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'); });
+    var f = document.querySelector('.reserve-embed iframe');
+    if (f) { var u = f.src.replace(/([?&])lang=[^&]*/, '$1lang=' + lang); if (u === f.src && !/[?&]lang=/.test(u)) u += '&lang=' + lang; if (u !== f.src) f.src = u; }
+    document.dispatchEvent(new CustomEvent('vb-lang', { detail: lang }));
+  }
+  var box = document.getElementById('lang');
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var mobile = window.matchMedia('(max-width: 900px)').matches;
+    if (mobile && !box.classList.contains('open')) { box.classList.add('open'); return; }
+    box.classList.remove('open');
+    try { localStorage.setItem('vb-lang', b.dataset.lang); } catch (err) {}
+    apply(b.dataset.lang);
+  });
+  document.addEventListener('click', function (e) { if (!box.contains(e.target)) box.classList.remove('open'); });
+  apply(window.VB_LANG);
 })();
 </script>
 </body>
