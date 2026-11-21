@@ -786,6 +786,9 @@ footer .sign { font-family: var(--f-hand); font-size: 1.7rem; color: var(--on-he
       if (lb.hidden) return;
       lb.hidden = true; document.body.style.overflow = '';
       if (lastBtn) lastBtn.focus({ preventScroll: true });
+      /* back to the logo unless the pointer is still resting on a dish circle */
+      var canHover = window.matchMedia('(hover: hover)').matches;
+      if (!canHover || !lastBtn || !lastBtn.matches(':hover')) reset();
     }
     lb.querySelectorAll('[data-close]').forEach(function (el) { el.addEventListener('click', closeLightbox); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
